@@ -18,6 +18,7 @@ import infraApi from "@/api/routes/infra.ts";
 import loggerApi from "@/api/routes/logger.ts";
 import { historyApiFallback } from "hono-history-api-fallback";
 
+console.log('启动中...')
 await loadInfra();
 await initPrismaSqlite();
 startCoverageConsumer();
@@ -70,5 +71,5 @@ app.route("/api", api);
 
 app.use("/*", historyApiFallback({ root: __dirname }));
 app.use("/*", serveStatic({ root: __dirname }));
-
+console.log('启动完成...')
 export default app;
