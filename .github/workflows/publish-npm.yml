@@ -17,6 +17,7 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
       - run: pnpm install
+      - run: pnpm run generate
       - run: pnpm run build
       - run: pnpm --filter=canyonapp publish --access public -f --no-git-checks
         continue-on-error: true

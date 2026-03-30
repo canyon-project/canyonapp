@@ -1,6 +1,6 @@
 {
   "name": "canyonapp",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "bin": {
     "canyonapp": "./bin/canyonapp.js"
   },
@@ -19,8 +19,6 @@
     "gen-coverage-report": "nyc report --reporter=@canyonjs/report --temp-dir=./.canyon_output",
     "test:e2e": "playwright test && npm run gen-coverage-report",
     "generate": "prisma generate && prisma generate --schema prisma/schema-sqlite.prisma",
-    "postinstall": "npm run generate",
-    "preinstall": "node ./scripts/check.mjs",
     "migrate:sql": "prisma migrate diff --from-empty --to-schema-datamodel ./prisma/schema.prisma --script > ./schema.sql",
     "clean": "node scripts/clean.mjs",
     "sync-catalog": "node scripts/sync-catalog.mjs"
