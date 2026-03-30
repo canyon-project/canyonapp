@@ -1,15 +1,23 @@
 {
-  "name": "vite-project",
-  "version": "0.0.0",
-  "private": true,
+  "name": "canyonapp",
+  "version": "0.0.1",
+  "private": false,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsgo -b && npm run build:client && npm run build:server",
     "build:client": "vite build --mode client",
     "build:server": "vite build",
+    "prepack": "npm run build",
     "test": "vitest run"
   },
+  "bin": {
+    "canyonapp": "./bin/canyonapp.js"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
   "dependencies": {
     "@hono/node-server": "^1.19.11",
     "@hono/swagger-ui": "^0.6.1",
