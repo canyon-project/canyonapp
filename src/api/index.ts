@@ -5,9 +5,22 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { fileURLToPath } from "node:url";
 
-import userApi from "@/api/routes/user.ts";
+import { loadInfra } from "@/api/lib/infra";
+import { initPrismaSqlite } from "@/api/lib/prisma-sqlite.ts";
+import { startCoverageConsumer } from "@/api/lib/collect/coverage-consumer.ts";
 
+import reposApi from "@/api/routes/repos.ts";
+import sourceApi from "@/api/routes/source.ts";
+import collectApi from "@/api/routes/collect.ts";
+import coverageApi from "@/api/routes/coverage.ts";
+import userApi from "@/api/routes/user.ts";
+import infraApi from "@/api/routes/infra.ts";
+import loggerApi from "@/api/routes/logger.ts";
 import { historyApiFallback } from "hono-history-api-fallback";
+
+await loadInfra();
+await initPrismaSqlite();
+startCoverageConsumer();
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -15,7 +28,13 @@ const app = new Hono();
 
 const api = new OpenAPIHono();
 
+api.route("/repos", reposApi);
 api.route("/user", userApi);
+api.route("/infra", infraApi);
+api.route("/source", sourceApi);
+api.route("/coverage", collectApi);
+api.route("/coverage", coverageApi);
+api.route("/logger", loggerApi);
 
 api.doc("/doc", {
   openapi: "3.0.0",

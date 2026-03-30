@@ -1,21 +1,30 @@
 import { defineConfig } from "vite";
-import react, { reactCompilerPreset } from "@vitejs/plugin-react";
-import babel from "@rolldown/plugin-babel";
 import devServer from "@hono/vite-dev-server";
 import build from "@hono/vite-build/node";
+import react from "@vitejs/plugin-react";
 import Pages from "vite-plugin-pages";
 import tailwindcss from "@tailwindcss/vite";
+import { copyPrismaEngines } from "./copyPrismaEngines.ts";
+import istanbulPlugin from "vite-plugin-istanbul";
+import canyonVitePlugin from "@canyonjs/vite-plugin";
 
-// https://vite.dev/config/
+const isProduction = process.env.NODE_ENV === "production";
+
+if (isProduction) {
+  console.log("当前是【生产环境】");
+} else {
+  console.log("当前是【开发/测试环境】");
+}
+
 export default defineConfig({
+  build: {
+    target: "es2022",
+  },
   plugins: [
     react(),
-    // @ts-ignore
-    babel({
-      presets: [reactCompilerPreset()],
-      plugins: [["istanbul", {}]],
+    Pages({
+      exclude: ["**/views/**", "**/helpers/**"],
     }),
-    Pages(),
     tailwindcss(),
     build({
       entry: "./src/api/index.ts",
@@ -26,10 +35,21 @@ export default defineConfig({
       entry: "./src/api/index.ts",
       exclude: [/^(?!\/api(\/|$|\?))/],
     }),
+    copyPrismaEngines(),
+    ...(isProduction
+      ? [
+          istanbulPlugin({
+            forceBuildInstrument: true,
+          }),
+          canyonVitePlugin(),
+        ]
+      : []),
   ],
   resolve: {
-    alias: {
-      "@": "/src",
-    },
+    tsconfigPaths: true,
+  },
+  server: {
+    port: 3000,
+    host: "0.0.0.0",
   },
 });
